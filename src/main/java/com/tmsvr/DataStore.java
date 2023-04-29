@@ -3,12 +3,14 @@ package com.tmsvr;
 import com.tmsvr.commitlog.CommitLog;
 import com.tmsvr.commitlog.DefaultCommitLog;
 import com.tmsvr.memtable.Memtable;
+import com.tmsvr.sstable.SSTableManager;
 
 import java.io.IOException;
 
 public class DataStore {
     private final CommitLog commitLog;
     private final Memtable memtable;
+    private final SSTableManager ssTableManager;
 
     public DataStore() throws IOException {
         this.commitLog = new DefaultCommitLog();
@@ -18,6 +20,9 @@ public class DataStore {
         } else {
             this.memtable = new Memtable();
         }
+
+        ssTableManager = new SSTableManager();
+        ssTableManager.readTablesFromFile();
     }
 
     public void store(String key, String value) throws IOException {
@@ -26,7 +31,19 @@ public class DataStore {
         memtable.put(dataRecord);
     }
 
-    public String get(String key) {
-        return memtable.get(key);
+    public String get(String key) throws IOException {
+        String value = memtable.get(key);
+
+        if (value != null) {
+            return value;
+        } else {
+            return ssTableManager.findValue(key);
+        }
+    }
+
+    public void flush() throws IOException {
+        ssTableManager.flush(memtable.getAsMap());
+        memtable.clear();
+        commitLog.clear();
     }
 }
