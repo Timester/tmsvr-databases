@@ -1,5 +1,6 @@
 package com.tmsvr.commitlog;
 
+import com.tmsvr.DataRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,29 +31,29 @@ class CommitLogTest {
     void appendAndReadIsOk() throws IOException {
         CommitLog cm = new DefaultCommitLog();
 
-        cm.append(new CommitLogEntry("a", "b"));
-        cm.append(new CommitLogEntry("a", "c"));
-        cm.append(new CommitLogEntry("b", "d"));
+        cm.append(new DataRecord("a", "b"));
+        cm.append(new DataRecord("a", "c"));
+        cm.append(new DataRecord("b", "d"));
 
         assertEquals(3, cm.getSize());
-        List<CommitLogEntry> commitLogEntries = cm.readCommitLog();
+        List<DataRecord> commitLogEntries = cm.readCommitLog();
         assertEquals(3, commitLogEntries.size());
 
-        assertTrue(commitLogEntries.contains(new CommitLogEntry("a", "b")));
-        assertTrue(commitLogEntries.contains(new CommitLogEntry("a", "c")));
-        assertTrue(commitLogEntries.contains(new CommitLogEntry("b", "d")));
+        assertTrue(commitLogEntries.contains(new DataRecord("a", "b")));
+        assertTrue(commitLogEntries.contains(new DataRecord("a", "c")));
+        assertTrue(commitLogEntries.contains(new DataRecord("b", "d")));
     }
 
     @Test
     void clearIsOk() throws IOException {
         CommitLog cm = new DefaultCommitLog();
 
-        cm.append(new CommitLogEntry("a", "b"));
-        cm.append(new CommitLogEntry("a", "c"));
-        cm.append(new CommitLogEntry("b", "d"));
+        cm.append(new DataRecord("a", "b"));
+        cm.append(new DataRecord("a", "c"));
+        cm.append(new DataRecord("b", "d"));
 
         assertEquals(3, cm.getSize());
-        List<CommitLogEntry> commitLogEntries = cm.readCommitLog();
+        List<DataRecord> commitLogEntries = cm.readCommitLog();
         assertEquals(3, commitLogEntries.size());
 
         cm.clear();

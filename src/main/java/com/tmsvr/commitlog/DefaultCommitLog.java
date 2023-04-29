@@ -1,5 +1,7 @@
 package com.tmsvr.commitlog;
 
+import com.tmsvr.DataRecord;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -30,23 +32,23 @@ public class DefaultCommitLog implements CommitLog {
         return Files.lines(Paths.get(DefaultCommitLog.FILE_PATH)).count();
     }
 
-    private String entryToString(CommitLogEntry entry) {
+    private String entryToString(DataRecord entry) {
         return entry.key() + "::" + entry.value() + System.lineSeparator();
     }
 
     @Override
-    public void append(CommitLogEntry entry) throws IOException {
+    public void append(DataRecord entry) throws IOException {
         Files.write(Paths.get(FILE_PATH), entryToString(entry).getBytes(), StandardOpenOption.APPEND);
         size++;
     }
 
     @Override
-    public List<CommitLogEntry> readCommitLog() throws IOException {
+    public List<DataRecord> readCommitLog() throws IOException {
         return Files.readAllLines(Paths.get(FILE_PATH))
                 .stream()
                 .map(line -> {
                     String[] split = line.split("::");
-                    return new CommitLogEntry(split[0], split[1]);
+                    return new DataRecord(split[0], split[1]);
                 }).toList();
     }
 
