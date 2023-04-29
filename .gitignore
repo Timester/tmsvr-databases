@@ -43,3 +43,6 @@ bin/
 
 ## app data ##
 commitlog*.txt
+sstable-*.data
+sstable-*.index
+sstable-*.tmp
