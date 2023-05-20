@@ -47,4 +47,5 @@ public class DataStore {
         memtable.clear();
         commitLog.clear();
     }
+
 }

@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -28,6 +29,10 @@ public class SSTable {
         this.indexFile = Paths.get(filename + INDEX_FILE_SUFFIX);
         this.dataFile = Paths.get(filename + DATA_FILE_SUFFIX);
         this.index = loadIndex();
+    }
+
+    public int getSize() {
+        return index.size();
     }
 
     public void write(Map<String, String> data) throws IOException {
@@ -85,6 +90,15 @@ public class SSTable {
             throw new IllegalStateException("Unexpected key: " + foundKey);
         }
         return Optional.of(result.split("::")[1]);
+    }
+
+    public void clear() throws IOException {
+        Files.deleteIfExists(indexFile);
+        Files.deleteIfExists(dataFile);
+    }
+
+    List<String> getAllLines() throws IOException {
+        return Files.readAllLines(dataFile);
     }
 
     private Map<String, Long> loadIndex() throws IOException {

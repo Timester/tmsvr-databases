@@ -12,8 +12,11 @@ import java.util.stream.Stream;
 public class SSTableManager {
     private final List<SSTable> ssTables;
 
+    private final Compactor compactor;
+
     public SSTableManager() {
         this.ssTables = new ArrayList<>();
+        this.compactor = new RowCountBasedCompactor();
     }
 
     public void flush(Map<String, String> data) throws IOException {
@@ -48,7 +51,12 @@ public class SSTableManager {
         }
     }
 
-    public void compaction() {
-        // TODO: implement compaction
+    public void compact() {
+        List<SSTable> compactedTables = compactor.compact(ssTables);
+
+
+
+        ssTables.clear();
+        ssTables.addAll(compactedTables);
     }
 }
