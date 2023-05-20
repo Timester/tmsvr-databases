@@ -7,10 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class DefaultCommitLog implements CommitLog {
 
-    static final String FILE_PATH = "commitlog.txt";
+    static final String FILE_PATH = "commit-log.txt";
     private long size;
 
     public DefaultCommitLog() throws IOException {
@@ -29,7 +30,9 @@ public class DefaultCommitLog implements CommitLog {
     }
 
     private long countLinesInLog() throws IOException {
-        return Files.lines(Paths.get(DefaultCommitLog.FILE_PATH)).count();
+        try (Stream<String> lines = Files.lines(Paths.get(DefaultCommitLog.FILE_PATH))) {
+            return lines.count();
+        }
     }
 
     private String entryToString(DataRecord entry) {
