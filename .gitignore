@@ -42,7 +42,7 @@ bin/
 .DS_Store
 
 ## app data ##
-commitlog*.txt
+commit-log*.txt
 sstable-*.data
 sstable-*.index
 sstable-*.tmp
