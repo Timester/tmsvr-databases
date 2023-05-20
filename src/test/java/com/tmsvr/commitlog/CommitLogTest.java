@@ -1,6 +1,7 @@
 package com.tmsvr.commitlog;
 
 import com.tmsvr.DataRecord;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CommitLogTest {
 
+    @AfterEach
     @BeforeEach
-    void setUp() throws IOException {
+    void cleanup() throws IOException {
         Files.deleteIfExists(Path.of(DefaultCommitLog.FILE_PATH));
     }
 
