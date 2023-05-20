@@ -21,8 +21,8 @@ public class SSTableManager {
     }
 
     public String findValue(String key) throws IOException {
-        for (SSTable ssTable : ssTables) {
-            String value = ssTable.getValue(key);
+        for (int i = ssTables.size() -1 ; i >= 0; i--) {
+            String value = ssTables.get(i).getValue(key);
             if (value != null) {
                 return value;
             }
