@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Stream;
 
@@ -61,15 +62,21 @@ public class SSTable {
         index.putAll(newIndex);
     }
 
-    public String getValue(String key) throws IOException {
+    public Optional<String> getValue(String key) throws IOException {
         Long offset = index.get(key);
         if (offset == null) {
-            return null;
+            return Optional.empty();
         }
 
         String result;
         try (Stream<String> lines = Files.lines(dataFile)) {
-            result = lines.skip(offset).findFirst().get();
+            Optional<String> firstLineAfterOffset = lines.skip(offset).findFirst();
+
+            if (firstLineAfterOffset.isPresent()) {
+                result = firstLineAfterOffset.get();
+            } else {
+                return Optional.empty();
+            }
         }
 
         String foundKey = result.split("::")[0];
@@ -77,7 +84,7 @@ public class SSTable {
         if (!foundKey.equals(key)) {
             throw new IllegalStateException("Unexpected key: " + foundKey);
         }
-        return result.split("::")[1];
+        return Optional.of(result.split("::")[1]);
     }
 
     private Map<String, Long> loadIndex() throws IOException {

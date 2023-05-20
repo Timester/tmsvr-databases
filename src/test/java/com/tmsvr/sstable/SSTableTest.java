@@ -18,7 +18,6 @@ import static com.tmsvr.sstable.SSTableFixtures.VALUE_1;
 import static com.tmsvr.sstable.SSTableFixtures.VALUE_2;
 import static com.tmsvr.sstable.SSTableFixtures.VALUE_3;
 import static com.tmsvr.sstable.SSTableFixtures.aDataSet;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -45,9 +44,13 @@ public class SSTableTest {
         assertTrue(Files.exists(Path.of(FILENAME + ".index")));
         assertTrue(Files.exists(Path.of(FILENAME + ".data")));
 
-        assertEquals(VALUE_1, ssTable.getValue(KEY_1));
-        assertEquals(VALUE_2, ssTable.getValue(KEY_2));
-        assertEquals(VALUE_3, ssTable.getValue(KEY_3));
+        assertTrue(ssTable.getValue(KEY_1).isPresent());
+        assertTrue(ssTable.getValue(KEY_2).isPresent());
+        assertTrue(ssTable.getValue(KEY_3).isPresent());
+
+        assertEquals(VALUE_1, ssTable.getValue(KEY_1).get());
+        assertEquals(VALUE_2, ssTable.getValue(KEY_2).get());
+        assertEquals(VALUE_3, ssTable.getValue(KEY_3).get());
     }
 
     @Test
@@ -56,6 +59,6 @@ public class SSTableTest {
         data.put(KEY_1, VALUE_1);
         ssTable.write(data);
 
-        assertNull(ssTable.getValue("invalid-key"));
+        assertTrue(ssTable.getValue("invalid-key").isEmpty());
     }
 }

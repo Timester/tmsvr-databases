@@ -53,7 +53,8 @@ class SSTableManagerTest {
         assertTrue(Files.exists(Path.of("sstable-0.data")));
 
         for (Map.Entry<String, String> entry : data.entrySet()) {
-            assertEquals(entry.getValue(), manager.findValue(entry.getKey()));
+            assertTrue(manager.findValue(entry.getKey()).isPresent());
+            assertEquals(entry.getValue(), manager.findValue(entry.getKey()).get());
         }
     }
 
@@ -74,9 +75,13 @@ class SSTableManagerTest {
         assertTrue(Files.exists(Path.of( "sstable-2.index")));
         assertTrue(Files.exists(Path.of("sstable-2.data")));
 
-        assertEquals(VALUE_1, manager.findValue(KEY_1));
-        assertEquals(VALUE_2, manager.findValue(KEY_2));
-        assertEquals(VALUE_3, manager.findValue(KEY_3));
+        assertTrue(manager.findValue(KEY_1).isPresent());
+        assertTrue(manager.findValue(KEY_2).isPresent());
+        assertTrue(manager.findValue(KEY_3).isPresent());
+
+        assertEquals(VALUE_1, manager.findValue(KEY_1).get());
+        assertEquals(VALUE_2, manager.findValue(KEY_2).get());
+        assertEquals(VALUE_3, manager.findValue(KEY_3).get());
     }
 
     @Test
@@ -87,11 +92,15 @@ class SSTableManagerTest {
         manager.flush(Map.of("newKey", "newValue", "anotherNewKey", "moreNewValues"));
 
         for (Map.Entry<String, String> entry : data.entrySet()) {
-            assertEquals(entry.getValue(), manager.findValue(entry.getKey()));
+            assertTrue(manager.findValue(entry.getKey()).isPresent());
+            assertEquals(entry.getValue(), manager.findValue(entry.getKey()).get());
         }
 
-        assertEquals("newValue", manager.findValue("newKey"));
-        assertEquals("moreNewValues", manager.findValue("anotherNewKey"));
+        assertTrue(manager.findValue("newKey").isPresent());
+        assertTrue(manager.findValue("anotherNewKey").isPresent());
+
+        assertEquals("newValue", manager.findValue("newKey").get());
+        assertEquals("moreNewValues", manager.findValue("anotherNewKey").get());
     }
 
     @Test
@@ -101,10 +110,15 @@ class SSTableManagerTest {
         manager.flush(data);
         manager.flush(Map.of("newKey", "newValue", KEY_1, "moreNewValues"));
 
-        assertEquals("newValue", manager.findValue("newKey"));
-        assertEquals("moreNewValues", manager.findValue(KEY_1));
-        assertEquals(VALUE_2, manager.findValue(KEY_2));
-        assertEquals(VALUE_3, manager.findValue(KEY_3));
+        assertTrue(manager.findValue(KEY_1).isPresent());
+        assertTrue(manager.findValue(KEY_2).isPresent());
+        assertTrue(manager.findValue(KEY_3).isPresent());
+        assertTrue(manager.findValue("newKey").isPresent());
+
+        assertEquals("newValue", manager.findValue("newKey").get());
+        assertEquals("moreNewValues", manager.findValue(KEY_1).get());
+        assertEquals(VALUE_2, manager.findValue(KEY_2).get());
+        assertEquals(VALUE_3, manager.findValue(KEY_3).get());
     }
 
     @Test
@@ -120,9 +134,14 @@ class SSTableManagerTest {
         SSTableManager newManager = new SSTableManager();
         newManager.readTablesFromFile();
 
-        assertEquals(VALUE_1, newManager.findValue(KEY_1));
-        assertEquals(VALUE_2, newManager.findValue(KEY_2));
-        assertEquals(VALUE_3, newManager.findValue(KEY_3));
-        assertEquals("v4", newManager.findValue("k4"));
+        assertTrue(newManager.findValue(KEY_1).isPresent());
+        assertTrue(newManager.findValue(KEY_2).isPresent());
+        assertTrue(newManager.findValue(KEY_3).isPresent());
+        assertTrue(newManager.findValue("k4").isPresent());
+
+        assertEquals(VALUE_1, newManager.findValue(KEY_1).get());
+        assertEquals(VALUE_2, newManager.findValue(KEY_2).get());
+        assertEquals(VALUE_3, newManager.findValue(KEY_3).get());
+        assertEquals("v4", newManager.findValue("k4").get());
     }
 }

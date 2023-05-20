@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 public class SSTableManager {
@@ -21,15 +22,15 @@ public class SSTableManager {
         ssTables.add(ssTable);
     }
 
-    public String findValue(String key) throws IOException {
+    public Optional<String> findValue(String key) throws IOException {
         for (int i = ssTables.size() - 1; i >= 0; i--) {
-            String value = ssTables.get(i).getValue(key);
-            if (value != null) {
+            Optional<String> value = ssTables.get(i).getValue(key);
+            if (value.isPresent()) {
                 return value;
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     public void readTablesFromFile() throws IOException {

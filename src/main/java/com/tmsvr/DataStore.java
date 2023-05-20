@@ -6,6 +6,7 @@ import com.tmsvr.memtable.Memtable;
 import com.tmsvr.sstable.SSTableManager;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class DataStore {
     private final CommitLog commitLog;
@@ -31,11 +32,11 @@ public class DataStore {
         memtable.put(dataRecord);
     }
 
-    public String get(String key) throws IOException {
+    public Optional<String> get(String key) throws IOException {
         String value = memtable.get(key);
 
         if (value != null) {
-            return value;
+            return Optional.of(value);
         } else {
             return ssTableManager.findValue(key);
         }
