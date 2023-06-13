@@ -1,4 +1,4 @@
-package com.tmsvr.sstable;
+package com.tmsvr.databases.lsmtree.sstable;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,22 +7,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 public class SSTableManager {
+    private static final int COMPACTION_THRESHOLD = 5;
     private final List<SSTable> ssTables;
 
     private final Compactor compactor;
 
+    private int newTablesSinceLastCompaction = 0;
+
     public SSTableManager() {
         this.ssTables = new ArrayList<>();
-        this.compactor = new RowCountBasedCompactor();
+        this.compactor = new RowCountBasedCompactor(10);
     }
 
     public void flush(Map<String, String> data) throws IOException {
-        SSTable ssTable = new SSTable("sstable-" + ssTables.size());
+        SSTable ssTable = new SSTable("sstable-" + UUID.randomUUID());
         ssTable.write(data);
         ssTables.add(ssTable);
+
+        newTablesSinceLastCompaction++;
+
+        if (newTablesSinceLastCompaction > COMPACTION_THRESHOLD) {
+            compact();
+        }
     }
 
     public Optional<String> findValue(String key) throws IOException {
@@ -51,12 +61,11 @@ public class SSTableManager {
         }
     }
 
-    public void compact() {
+    public void compact() throws IOException {
         List<SSTable> compactedTables = compactor.compact(ssTables);
-
-
-
         ssTables.clear();
         ssTables.addAll(compactedTables);
+
+        newTablesSinceLastCompaction = 0;
     }
 }

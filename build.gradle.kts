@@ -1,9 +1,15 @@
 plugins {
-    id("java")
+    java
 }
 
-group = "com.tmsvr"
+group = "com.tmsvr.databases"
 version = "1.0-SNAPSHOT"
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
 
 repositories {
     mavenCentral()

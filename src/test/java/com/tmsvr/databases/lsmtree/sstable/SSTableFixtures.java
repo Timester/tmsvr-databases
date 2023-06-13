@@ -1,4 +1,4 @@
-package com.tmsvr.sstable;
+package com.tmsvr.databases.lsmtree.sstable;
 
 import java.util.HashMap;
 import java.util.Map;

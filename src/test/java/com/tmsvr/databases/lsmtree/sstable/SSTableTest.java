@@ -1,4 +1,4 @@
-package com.tmsvr.sstable;
+package com.tmsvr.databases.lsmtree.sstable;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,14 +10,14 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.tmsvr.sstable.SSTableFixtures.FILENAME;
-import static com.tmsvr.sstable.SSTableFixtures.KEY_1;
-import static com.tmsvr.sstable.SSTableFixtures.KEY_2;
-import static com.tmsvr.sstable.SSTableFixtures.KEY_3;
-import static com.tmsvr.sstable.SSTableFixtures.VALUE_1;
-import static com.tmsvr.sstable.SSTableFixtures.VALUE_2;
-import static com.tmsvr.sstable.SSTableFixtures.VALUE_3;
-import static com.tmsvr.sstable.SSTableFixtures.aDataSet;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.FILENAME;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.KEY_1;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.KEY_2;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.KEY_3;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.VALUE_1;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.VALUE_2;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.VALUE_3;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.aDataSet;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

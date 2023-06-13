@@ -1,6 +1,6 @@
-package com.tmsvr.commitlog;
+package com.tmsvr.databases.lsmtree.commitlog;
 
-import com.tmsvr.DataRecord;
+import com.tmsvr.databases.lsmtree.DataRecord;
 
 import java.io.IOException;
 import java.util.List;

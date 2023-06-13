@@ -1,6 +1,6 @@
-package com.tmsvr.memtable;
+package com.tmsvr.databases.lsmtree.memtable;
 
-import com.tmsvr.DataRecord;
+import com.tmsvr.databases.lsmtree.DataRecord;
 
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,6 @@
-package com.tmsvr;
+package com.tmsvr.databases;
+
+import com.tmsvr.databases.lsmtree.DataStore;
 
 import java.io.IOException;
 
@@ -11,25 +13,26 @@ public class Main {
     public void start() throws IOException {
         DataStore ds = new DataStore();
 
-        ds.store("key1", "value1");
-        ds.store("key2", "value2");
-        ds.store("key3", "value3");
-        ds.store("key4", "value4");
-        ds.store("key5", "value5");
-        ds.store("key1", "value1-modified");
+        ds.put("key1", "value1");
+        ds.put("key2", "value2");
+        ds.put("key3", "value3");
+        ds.put("key4", "value4");
+        ds.put("key5", "value5");
+        ds.put("key1", "value1-modified");
 
-        ds.flush();
+      //  ds.flush();
 
-        ds.store("key6", "value6");
-        ds.store("key7", "value7");
-        ds.store("key3", "value3-modified");
-        ds.store("key5", "value5-modified");
+        ds.put("key6", "value6");
+        ds.put("key7", "value7");
+        ds.put("key3", "value3-modified");
+        ds.put("key5", "value5-modified");
 
-        ds.flush();
+      //  ds.flush();
 
-        ds.store("key8", "value8");
-        ds.store("key9", "value9");
-        ds.store("key9", "value9-modified");
+        ds.put("key8", "value8");
+        ds.put("key9", "value9");
+        ds.put("key9", "value9-modified");
+        ds.put("key10", "value10");
 
         System.out.println("key1 - " + ds.get("key1").orElse("not found"));
         System.out.println("key2 - " + ds.get("key2").orElse("not found"));

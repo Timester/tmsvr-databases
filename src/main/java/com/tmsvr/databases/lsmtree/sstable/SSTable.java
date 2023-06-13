@@ -1,4 +1,6 @@
-package com.tmsvr.sstable;
+package com.tmsvr.databases.lsmtree.sstable;
+
+import com.tmsvr.databases.lsmtree.DataRecord;
 
 import java.io.EOFException;
 import java.io.FileInputStream;
@@ -15,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class SSTable {
@@ -35,11 +38,17 @@ public class SSTable {
         return index.size();
     }
 
+    public void write(List<DataRecord> records) throws IOException {
+        this.write(records.stream().collect(Collectors.toMap(DataRecord::key, DataRecord::value)));
+    }
+
     public void write(Map<String, String> data) throws IOException {
         if (Files.exists(indexFile)) {
             System.out.println("SSTable can't be written, Index file already exists");
             return;
         }
+
+        Map<String, String> sortedData = new TreeMap<>(data);
 
         // Write data to a temporary file
         Path tempFile = Files.createFile(Path.of(dataFile.getFileName().toString() + ".tmp"));
@@ -47,7 +56,7 @@ public class SSTable {
         // Write the data to the temporary file and create an index
         Map<String, Long> newIndex = new TreeMap<>();
         long offset = 0;
-        for (Map.Entry<String, String> entry : data.entrySet()) {
+        for (Map.Entry<String, String> entry : sortedData.entrySet()) {
             Files.write(tempFile, (entry.getKey() + "::" + entry.getValue() + System.lineSeparator()).getBytes(), StandardOpenOption.APPEND);
             newIndex.put(entry.getKey(), offset);
             offset++;
@@ -92,15 +101,13 @@ public class SSTable {
         return Optional.of(result.split("::")[1]);
     }
 
-    public void clear() throws IOException {
-        Files.deleteIfExists(indexFile);
-        Files.deleteIfExists(dataFile);
+    List<DataRecord> getAllLines() throws IOException {
+        return Files.readAllLines(dataFile).stream()
+                .map(line -> new DataRecord(line.split("::")[0], line.split("::")[1]))
+                .toList();
     }
 
-    List<String> getAllLines() throws IOException {
-        return Files.readAllLines(dataFile);
-    }
-
+    @SuppressWarnings("unchecked")
     private Map<String, Long> loadIndex() throws IOException {
         try (ObjectInputStream indexObjIn = new ObjectInputStream(new FileInputStream(indexFile.toFile()))) {
             return (Map<String, Long>) indexObjIn.readObject();

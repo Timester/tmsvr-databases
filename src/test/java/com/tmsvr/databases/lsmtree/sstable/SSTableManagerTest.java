@@ -1,5 +1,6 @@
-package com.tmsvr.sstable;
+package com.tmsvr.databases.lsmtree.sstable;
 
+import com.tmsvr.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,14 +9,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.stream.Stream;
 
-import static com.tmsvr.sstable.SSTableFixtures.KEY_1;
-import static com.tmsvr.sstable.SSTableFixtures.KEY_2;
-import static com.tmsvr.sstable.SSTableFixtures.KEY_3;
-import static com.tmsvr.sstable.SSTableFixtures.VALUE_1;
-import static com.tmsvr.sstable.SSTableFixtures.VALUE_2;
-import static com.tmsvr.sstable.SSTableFixtures.VALUE_3;
-import static com.tmsvr.sstable.SSTableFixtures.aDataSet;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.KEY_1;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.KEY_2;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.KEY_3;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.VALUE_1;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.VALUE_2;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.VALUE_3;
+import static com.tmsvr.databases.lsmtree.sstable.SSTableFixtures.aDataSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,22 +27,13 @@ class SSTableManagerTest {
 
     @BeforeEach
     void setup() throws IOException {
-        cleanupFiles();
+        TestUtils.cleanupFiles();
         manager = new SSTableManager();
     }
 
     @AfterEach
     void cleanup() throws IOException {
-        cleanupFiles();
-    }
-
-    private void cleanupFiles() throws IOException {
-        Files.deleteIfExists(Path.of("sstable-0.index"));
-        Files.deleteIfExists(Path.of("sstable-0.data"));
-        Files.deleteIfExists(Path.of("sstable-1.index"));
-        Files.deleteIfExists(Path.of("sstable-1.data"));
-        Files.deleteIfExists(Path.of("sstable-2.index"));
-        Files.deleteIfExists(Path.of("sstable-2.data"));
+        TestUtils.cleanupFiles();
     }
 
     @Test
@@ -49,8 +42,7 @@ class SSTableManagerTest {
 
         manager.flush(data);
 
-        assertTrue(Files.exists(Path.of( "sstable-0.index")));
-        assertTrue(Files.exists(Path.of("sstable-0.data")));
+        assertSSTablesFlushed(1);
 
         for (Map.Entry<String, String> entry : data.entrySet()) {
             assertTrue(manager.findValue(entry.getKey()).isPresent());
@@ -68,12 +60,7 @@ class SSTableManagerTest {
         manager.flush(data1);
         manager.flush(data2);
 
-        assertTrue(Files.exists(Path.of( "sstable-0.index")));
-        assertTrue(Files.exists(Path.of("sstable-0.data")));
-        assertTrue(Files.exists(Path.of( "sstable-1.index")));
-        assertTrue(Files.exists(Path.of("sstable-1.data")));
-        assertTrue(Files.exists(Path.of( "sstable-2.index")));
-        assertTrue(Files.exists(Path.of("sstable-2.data")));
+        assertSSTablesFlushed(3);
 
         assertTrue(manager.findValue(KEY_1).isPresent());
         assertTrue(manager.findValue(KEY_2).isPresent());
@@ -143,5 +130,14 @@ class SSTableManagerTest {
         assertEquals(VALUE_2, newManager.findValue(KEY_2).get());
         assertEquals(VALUE_3, newManager.findValue(KEY_3).get());
         assertEquals("v4", newManager.findValue("k4").get());
+    }
+
+    private void assertSSTablesFlushed(int numberOfExpectedTables) throws IOException {
+        try(Stream<Path> files = Files.list(Path.of("."))) {
+            long filesStartingWithSSTable = files.filter(path -> path.getFileName().toString().startsWith("sstable"))
+                    .count();
+
+            assertEquals(numberOfExpectedTables, filesStartingWithSSTable / 2);
+        }
     }
 }

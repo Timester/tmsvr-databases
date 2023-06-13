@@ -1,14 +1,15 @@
-package com.tmsvr;
+package com.tmsvr.databases.lsmtree;
 
-import com.tmsvr.commitlog.CommitLog;
-import com.tmsvr.commitlog.DefaultCommitLog;
-import com.tmsvr.memtable.Memtable;
-import com.tmsvr.sstable.SSTableManager;
+import com.tmsvr.databases.lsmtree.commitlog.CommitLog;
+import com.tmsvr.databases.lsmtree.commitlog.DefaultCommitLog;
+import com.tmsvr.databases.lsmtree.memtable.Memtable;
+import com.tmsvr.databases.lsmtree.sstable.SSTableManager;
 
 import java.io.IOException;
 import java.util.Optional;
 
 public class DataStore {
+    private static final long FLUSH_TO_DISK_LIMIT = 5;
     private final CommitLog commitLog;
     private final Memtable memtable;
     private final SSTableManager ssTableManager;
@@ -26,10 +27,14 @@ public class DataStore {
         ssTableManager.readTablesFromFile();
     }
 
-    public void store(String key, String value) throws IOException {
+    public void put(String key, String value) throws IOException {
         DataRecord dataRecord = new DataRecord(key, value);
         commitLog.append(dataRecord);
         memtable.put(dataRecord);
+
+        if (memtable.getSize() > FLUSH_TO_DISK_LIMIT) {
+            flush();
+        }
     }
 
     public Optional<String> get(String key) throws IOException {
