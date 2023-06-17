@@ -32,7 +32,7 @@ public class Main {
         ds.put("key8", "value8");
         ds.put("key9", "value9");
         ds.put("key9", "value9-modified");
-        ds.put("key10", "value10");
+        ds.delete("key5");
 
         System.out.println("key1 - " + ds.get("key1").orElse("not found"));
         System.out.println("key2 - " + ds.get("key2").orElse("not found"));
@@ -41,5 +41,6 @@ public class Main {
         System.out.println("key6 - " + ds.get("key6").orElse("not found"));
         System.out.println("key8 - " + ds.get("key8").orElse("not found"));
         System.out.println("key9 - " + ds.get("key9").orElse("not found"));
+        System.out.println("key10 - " + ds.get("key10").orElse("not found"));
     }
 }
