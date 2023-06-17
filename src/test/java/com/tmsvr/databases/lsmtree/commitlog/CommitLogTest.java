@@ -1,6 +1,6 @@
 package com.tmsvr.databases.lsmtree.commitlog;
 
-import com.tmsvr.databases.lsmtree.DataRecord;
+import com.tmsvr.databases.DataRecord;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

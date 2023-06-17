@@ -1,6 +1,6 @@
 package com.tmsvr.databases.lsmtree.memtable;
 
-import com.tmsvr.databases.lsmtree.DataRecord;
+import com.tmsvr.databases.DataRecord;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

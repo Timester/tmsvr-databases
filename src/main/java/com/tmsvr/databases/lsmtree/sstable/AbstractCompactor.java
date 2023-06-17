@@ -1,6 +1,6 @@
 package com.tmsvr.databases.lsmtree.sstable;
 
-import com.tmsvr.databases.lsmtree.DataRecord;
+import com.tmsvr.databases.DataRecord;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package com.tmsvr.databases;
 
-import com.tmsvr.databases.lsmtree.DataStore;
+import com.tmsvr.databases.lsmtree.LsmDataStore;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ public class Main {
     }
 
     public void start() throws IOException {
-        DataStore ds = new DataStore();
+        DataStore ds = new LsmDataStore();
 
         ds.put("key1", "value1");
         ds.put("key2", "value2");
