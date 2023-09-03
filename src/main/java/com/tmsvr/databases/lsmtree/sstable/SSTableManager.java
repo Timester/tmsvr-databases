@@ -1,5 +1,7 @@
 package com.tmsvr.databases.lsmtree.sstable;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
 
+@Slf4j
 public class SSTableManager {
     private static final int COMPACTION_THRESHOLD = 5;
     private final List<SSTable> ssTables;
@@ -51,7 +54,7 @@ public class SSTableManager {
 
         try (Stream<Path> paths = Files.find(rootPath, 1, (path, attr) -> path.toString().endsWith(".index"))) {
             paths.forEach(path -> {
-                System.out.println("SSTable found: " + path.toString().replace(".index", ""));
+                log.info("SSTable found: " + path.toString().replace(".index", ""));
                 try {
                     ssTables.add(new SSTable(path.toString().replace(".index", "")));
                 } catch (IOException e) {

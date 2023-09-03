@@ -1,6 +1,7 @@
 package com.tmsvr.databases.lsmtree.commitlog;
 
 import com.tmsvr.databases.DataRecord;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,6 +10,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.stream.Stream;
 
+@Slf4j
 public class DefaultCommitLog implements CommitLog {
 
     static final String FILE_PATH = "commit-log.txt";
@@ -18,7 +20,7 @@ public class DefaultCommitLog implements CommitLog {
         this.size = 0;
 
         if (Files.exists(Paths.get(FILE_PATH))) {
-            System.out.println("Commit Log already exists");
+            log.info("Commit Log already exists");
             size = countLinesInLog();
         } else {
             createFile();

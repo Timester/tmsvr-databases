@@ -1,6 +1,7 @@
 package com.tmsvr.databases.lsmtree.sstable;
 
 import com.tmsvr.databases.DataRecord;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.EOFException;
 import java.io.FileInputStream;
@@ -20,6 +21,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 public class SSTable {
     private static final String INDEX_FILE_SUFFIX = ".index";
     private static final String DATA_FILE_SUFFIX = ".data";
@@ -44,7 +46,7 @@ public class SSTable {
 
     public void write(Map<String, String> data) throws IOException {
         if (Files.exists(indexFile)) {
-            System.out.println("SSTable can't be written, Index file already exists");
+            log.warn("SSTable can't be written, Index file already exists");
             return;
         }
 
@@ -114,7 +116,7 @@ public class SSTable {
         } catch (ClassNotFoundException e) {
             throw new IOException("Failed to load index", e);
         } catch (EOFException | FileNotFoundException e) {
-            System.out.println("Index file is empty");
+            log.info("Index file is empty");
             return new TreeMap<>();
         }
     }
